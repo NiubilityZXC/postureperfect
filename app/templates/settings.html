@@ -1,0 +1,14 @@
+{% extends "base.html" %} {% block content %}
+<h2>Settings Page</h2>
+<div class="form-check form-switch">
+  <input class="form-check-input" type="checkbox" id="darkModeSwitch" />
+  <label class="form-check-label" for="darkModeSwitch">Dark Mode</label>
+  <script>
+    document
+      .getElementById("darkModeSwitch")
+      .addEventListener("change", function (event) {
+        document.body.classList.toggle("dark-mode", event.target.checked);
+      });
+  </script>
+</div>
+{% endblock %}

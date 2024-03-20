@@ -10,16 +10,111 @@
 .dark-mode .navbar a.nav-link {
   color: #ffffff;
 }
+
 .card {
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  transition: 0.3s;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
-  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
 .card-body {
-  padding: 20px;
+  padding: 1.5rem;
 }
 
+.card-title {
+  margin-bottom: 1rem;
+  color: #007bff;
+}
+
+.btn-group .btn {
+  margin-right: 5px;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.btn-group .btn:hover {
+  background-color: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+
+@media (max-width: 768px) {
+  .btn-group {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  .card {
+    margin-bottom: 1rem;
+  }
+}
+
+.card > .card-body {
+  background-color: #f9f9f9;
+  border-radius: 0.25rem;
+}
+
+.btn-primary {
+  background-color: #0056b3;
+  border-color: #004085;
+}
+
+.btn-primary:hover {
+  background-color: #004085;
+  border-color: #003768;
+}
+
+/* Additional Styles */
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 960px;
+}
+
+h2 {
+  font-weight: 600;
+  color: #333;
+}
+
+.form-control {
+  border-radius: 0.25rem;
+}
+
+.btn {
+  border-radius: 0.25rem;
+}
+
+.dark-mode .card {
+  background-color: #484e53;
+  color: #e1e1e1;
+}
+
+.dark-mode .card > .card-body {
+  background-color: #3c4347;
+}
+
+a {
+  transition: color 0.3s ease;
+}
+
+a:hover, a:focus {
+  color: #0056b3;
+}
+
+.button:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+}
+
+[role="button"], button {
+  cursor: pointer;
+}

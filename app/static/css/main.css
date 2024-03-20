@@ -1,19 +1,56 @@
-.dark-mode {
-  background-color: #343a40;
-  color: #ffffff;
+/* Base Styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
 }
 
-.dark-mode .navbar {
-  background-color: #000000;
+h2 {
+  font-weight: 600;
+  color: #333;
 }
 
-.dark-mode .navbar a.nav-link {
-  color: #ffffff;
+.container {
+  max-width: 960px;
 }
 
+a {
+  transition: color 0.3s ease;
+}
+
+a:hover, a:focus {
+  color: #0056b3; /* Adjust color based on your theme */
+}
+
+[role="button"], button {
+  cursor: pointer;
+}
+
+/* Button Styles */
+.btn {
+  border-radius: 0.25rem;
+  transition: all 0.3s ease;
+}
+
+.btn-primary, .btn-download, .btn-secondary {
+  color: #000 !important; /* Black text for better contrast with lighter pink */
+  background-color: #f5c5c2 !important; /* Lighter pink */
+  border-color: #f5c5c2 !important;
+}
+
+.btn-primary:hover, .btn-download:hover, .btn-secondary:hover {
+  background-color: #f78da7 !important; /* Slightly darker pink on hover */
+  border-color: #f78da7 !important;
+}
+
+.btn-group .btn {
+  margin-right: 5px;
+}
+
+/* Card Styles */
 .card {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 1rem;
 }
 
 .card:hover {
@@ -23,98 +60,53 @@
 
 .card-body {
   padding: 1.5rem;
-}
-
-.card-title {
-  margin-bottom: 1rem;
-  color: #007bff;
-}
-
-.btn-group .btn {
-  margin-right: 5px;
-  border: 2px solid transparent;
-  transition: all 0.3s ease;
-}
-
-.btn-group .btn:hover {
-  background-color: #007bff;
-  color: #fff;
-  border-color: #007bff;
-}
-
-@media (max-width: 768px) {
-  .btn-group {
-    display: flex;
-    width: 100%;
-    justify-content: space-around;
-  }
-
-  .card {
-    margin-bottom: 1rem;
-  }
-}
-
-.card > .card-body {
   background-color: #f9f9f9;
   border-radius: 0.25rem;
 }
 
-.btn-primary {
-  background-color: #0056b3;
-  border-color: #004085;
+.card-title {
+  margin-bottom: 1rem;
+  color: #ff69b4; /* Consistent theme color */
 }
 
-.btn-primary:hover {
-  background-color: #004085;
-  border-color: #003768;
+/* Navbar Styles */
+.navbar {
+  background-color: #f5c5c2 !important; /* Lighter pink for the navbar */
 }
 
-/* Additional Styles */
-
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  line-height: 1.6;
+.navbar a.nav-link {
+  color: #000000 !important; /* Black font color for visibility */
 }
 
-.container {
-  max-width: 960px;
+/* Dark Mode Styles */
+.dark-mode {
+  background-color: #343a40;
+  color: #ffffff;
 }
 
-h2 {
-  font-weight: 600;
-  color: #333;
+.dark-mode .navbar {
+  background-color: #000000;
 }
 
-.form-control {
-  border-radius: 0.25rem;
-}
-
-.btn {
-  border-radius: 0.25rem;
+.dark-mode .navbar a.nav-link,
+.dark-mode .card,
+.dark-mode .card > .card-body {
+  color: #ffffff;
 }
 
 .dark-mode .card {
   background-color: #484e53;
-  color: #e1e1e1;
 }
 
 .dark-mode .card > .card-body {
   background-color: #3c4347;
 }
 
-a {
-  transition: color 0.3s ease;
-}
-
-a:hover, a:focus {
-  color: #0056b3;
-}
-
-.button:focus {
-  outline: none;
-  box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
-}
-
-[role="button"], button {
-  cursor: pointer;
+/* Responsive Design */
+@media (max-width: 768px) {
+  .btn-group {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+  }
 }

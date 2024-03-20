@@ -1,6 +1,41 @@
 {% extends "base.html" %} {% block content %}
 <div class="container mt-4">
-  <h2 class="mb-4">Posture Data Analysis</h2>
+  <h2 class="mb-4">Posture Data</h2>
+
+  <div class="d-flex justify-content-start" style="margin-bottom: 20px">
+    <div class="btn-group" role="group" aria-label="Time Interval">
+      <button type="button" class="btn btn-secondary" id="day">Day</button>
+      <button type="button" class="btn btn-secondary" id="week">Week</button>
+      <button type="button" class="btn btn-secondary" id="month">Month</button>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-sm-4">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Usage Time</h5>
+          <p class="card-text" id="usageTime">0 hrs</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Good Posture Percentage</h5>
+          <p class="card-text" id="goodPosturePercentage">0%</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="card-title">Alerts</h5>
+          <p class="card-text" id="alerts">0</p>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="row">
     <div class="col-lg-6 mb-4">
       <div class="card">
@@ -23,85 +58,94 @@
   </div>
 </div>
 
-<script src="{{ url_for('static', filename='js/chart.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+  var correctSittingChart, reminderChart;
   document.addEventListener("DOMContentLoaded", function () {
-    var ctxCorrectSitting = document
-      .getElementById("correctSittingChart")
-      .getContext("2d");
-    var correctSittingChart = new Chart(ctxCorrectSitting, {
-      type: "line",
-      data: {
-        labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-        datasets: [
-          {
-            label: "Hours",
-            data: [5, 6, 8, 5, 7],
-            backgroundColor: "rgba(75, 192, 192, 0.2)",
-            borderColor: "rgb(75, 192, 192)",
-            fill: false,
-            tension: 0.1,
-          },
-        ],
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true,
-          },
-        },
-        plugins: {
-          legend: {
-            position: "top",
-          },
-          tooltip: {
-            mode: "index",
-            intersect: false,
-          },
-        },
-        interaction: {
-          mode: "nearest",
-          axis: "x",
-          intersect: false,
-        },
-      },
-    });
+    function fetchData(interval = "day") {
+      fetch(`/api/posture-data?interval=${interval}`)
+        .then((response) => response.json())
+        .then((data) => {
+          if (correctSittingChart) {
+            correctSittingChart.destroy();
+          }
+          if (reminderChart) {
+            reminderChart.destroy();
+          }
+          var ctxCorrectSitting = document
+            .getElementById("correctSittingChart")
+            .getContext("2d");
+          correctSittingChart = new Chart(ctxCorrectSitting, {
+            type: "line",
+            data: {
+              labels: data.labels,
+              datasets: [
+                {
+                  label: "Hours",
+                  data: data.correctSitting,
+                  backgroundColor: "rgba(75, 192, 192, 0.2)",
+                  borderColor: "rgb(75, 192, 192)",
+                  fill: false,
+                  tension: 0.1,
+                },
+              ],
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true,
+                },
+              },
+            },
+          });
 
-    var ctxReminder = document.getElementById("reminderChart").getContext("2d");
-    var reminderChart = new Chart(ctxReminder, {
-      type: "bar",
-      data: {
-        labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-        datasets: [
-          {
-            label: "Reminders",
-            data: [2, 3, 1, 4, 2],
-            backgroundColor: [
-              "rgba(255, 99, 132, 0.2)",
-              "rgba(54, 162, 235, 0.2)",
-              "rgba(255, 206, 86, 0.2)",
-              "rgba(75, 192, 192, 0.2)",
-              "rgba(153, 102, 255, 0.2)",
-            ],
-            borderColor: [
-              "rgba(255, 99, 132, 1)",
-              "rgba(54, 162, 235, 1)",
-              "rgba(255, 206, 86, 1)",
-              "rgba(75, 192, 192, 1)",
-              "rgba(153, 102, 255, 1)",
-            ],
-            borderWidth: 1,
-          },
-        ],
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true,
-          },
-        },
-      },
-    });
+          var ctxReminder = document
+            .getElementById("reminderChart")
+            .getContext("2d");
+          reminderChart = new Chart(ctxReminder, {
+            type: "bar",
+            data: {
+              labels: data.labels,
+              datasets: [
+                {
+                  label: "Reminders",
+                  data: data.reminders,
+                  backgroundColor: "rgba(255, 99, 132, 0.2)",
+                  borderColor: "rgba(255, 99, 132, 1)",
+                  borderWidth: 1,
+                },
+              ],
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true,
+                },
+              },
+            },
+          });
+          document.getElementById(
+            "usageTime"
+          ).textContent = `${data.usageTime} hrs`;
+          document.getElementById(
+            "goodPosturePercentage"
+          ).textContent = `${data.goodPosturePercentage}%`;
+          document.getElementById("alerts").textContent = data.alerts;
+        })
+        .catch((error) => console.error("Error fetching posture data:", error));
+    }
+    fetchData("day");
+
+    // Event listeners for interval buttons
+    document
+      .getElementById("day")
+      .addEventListener("click", () => fetchData("day"));
+    document
+      .getElementById("week")
+      .addEventListener("click", () => fetchData("week"));
+    document
+      .getElementById("month")
+      .addEventListener("click", () => fetchData("month"));
   });
 </script>
 {% endblock %}

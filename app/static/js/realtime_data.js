@@ -1,16 +1,16 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const ws = new WebSocket("ws://localhost:8080");
+  var socket = io("http://127.0.0.1:5000");
 
-  ws.onmessage = function (event) {
-    const data = JSON.parse(event.data);
+  socket.on("connect", function () {
+    console.log("Connected to the WebSocket server!");
+  });
+
+  socket.on("posture_data", function (wrappedData) {
+    const data = JSON.parse(wrappedData.data); // 这里是关键改动
     console.log("Received data:", data);
     updateTable(data);
     assessShoulderTilt(data);
-  };
-
-  ws.onerror = function (error) {
-    console.log("WebSocket Error:", error);
-  };
+  });
 
   function updateTable(data) {
     const dataTableBody = document.getElementById("data-table-body");
@@ -32,11 +32,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function assessShoulderTilt(data) {
-    // Simple logic to determine shoulder tilt
-    // Assumes data structure where Accel Y is at index 1
     const mpu1AccelY = data.MPU1.Accel[1];
     const mpu2AccelY = data.MPU2.Accel[1];
-    const tiltThreshold = 0.5; // Customize based on calibration and testing
+    const tiltThreshold = 0.5;
 
     if (Math.abs(mpu1AccelY - mpu2AccelY) > tiltThreshold) {
       updateStatus("Tilted");

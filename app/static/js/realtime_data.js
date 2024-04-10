@@ -5,11 +5,12 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("Connected to the WebSocket server!");
   });
 
-  socket.on("posture_data", function (wrappedData) {
-    const data = JSON.parse(wrappedData.data); // 这里是关键改动
+  socket.on(function (wrappedData) {
+    const data = wrappedData.data; // 这里是关键改动
     console.log("Received data:", data);
-    updateTable(data);
-    assessShoulderTilt(data);
+    const sensorData = parseSensorData(message);
+    updateTable(sensorData);
+    updateStatus(sensorData.Posture.toLowerCase());
   });
 
   function updateTable(data) {
@@ -31,26 +32,37 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  function assessShoulderTilt(data) {
-    const mpu1AccelY = data.MPU1.Accel[1];
-    const mpu2AccelY = data.MPU2.Accel[1];
-    const tiltThreshold = 0.5;
-
-    if (Math.abs(mpu1AccelY - mpu2AccelY) > tiltThreshold) {
-      updateStatus("Tilted");
-    } else {
-      updateStatus("Normal");
-    }
-  }
-
   function updateStatus(status) {
     const statusDiv = document.getElementById("status");
+    const statusText = status === "normal" ? "😀 Normal" : "🙅 Error";
     if (status === "Tilted") {
       statusDiv.className = "alert alert-warning";
-      statusDiv.textContent = "Status: Shoulders Tilted";
+      statusDiv.textContent = statusText;
     } else {
       statusDiv.className = "alert alert-success";
-      statusDiv.textContent = "Status: Normal";
+      statusDiv.textContent = statusText;
     }
   }
 });
+
+function parseSensorData(sensorString) {
+  const regex =
+    /MPU1 Accel: \(([^)]+)\), Gyro: \(([^)]+)\), Temp: ([^;]+); MPU2 Accel: \(([^)]+)\), Gyro: \(([^)]+)\), Temp: ([^;]+); Posture: (\w+)/;
+  const match = sensorString.match(regex);
+  if (match && match.length === 8) {
+    const mpu1Accel = match[1].split(", ").map(Number);
+    const mpu1Gyro = match[2].split(", ").map(Number);
+    const mpu1Temp = parseFloat(match[3]);
+    const mpu2Accel = match[4].split(", ").map(Number);
+    const mpu2Gyro = match[5].split(", ").map(Number);
+    const mpu2Temp = parseFloat(match[6]);
+    const posture = match[7]; // 获取姿势状态
+
+    return {
+      MPU1: { Accel: mpu1Accel, Gyro: mpu1Gyro, Temp: mpu1Temp },
+      MPU2: { Accel: mpu2Accel, Gyro: mpu2Gyro, Temp: mpu2Temp },
+      Posture: posture,
+    };
+  }
+  return null;
+}

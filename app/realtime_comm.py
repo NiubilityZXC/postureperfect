@@ -11,7 +11,7 @@ def handle_udp_server():
     while True:
         msg, addr = udp_server.recvfrom(1024)  # buffer size is 1024 bytes
         print(f"UDP Server received message: {msg} from {addr}")
-        socketio.emit(msg.toString())
+        socketio.emit(msg.encode('utf-8'))
 
 udp_thread = threading.Thread(target=handle_udp_server)
 udp_thread.start()
